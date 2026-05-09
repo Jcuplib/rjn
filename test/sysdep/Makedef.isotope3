@@ -1,0 +1,64 @@
+################################################################################
+#
+# ------ For Linux & intel fortran&C & openmpi -----
+#
+################################################################################
+
+##### Fortran setting
+
+FC  = mpif90
+
+FFLAGS_COMMON =
+
+FFLAGS_FAST  = -fPIC -fpp -m64 -O3 -xHost -free     \
+               -assume byterecl -convert big_endian \
+               -fp-model source                     \
+               -mcmodel=medium -shared-intel        \
+               -heap-arrays -fpscomp logicals       \
+               $(FFLAGS_COMMON)
+
+FFLAGS_DEBUG = -fPIC -fpp -m64 -O0 -free            \
+               -assume byterecl -convert big_endian \
+               -fpe0 -fp-model source               \
+               -check all -warn all -g -traceback   \
+               -mcmodel=medium -shared-intel        \
+               -heap-arrays -fpscomp logicals       \
+               $(FFLAGS_COMMON)
+
+# Please remove -heap-arrays for a site simulation
+
+# if ILS_DEBUG=T is set, FFLAGS_DEBUG is selected in Mkinclude
+
+##### C setting
+
+CC = mpicc
+
+CFLAGS_FAST  = -O3 -xHost -ip -ftz -mcmodel=medium -shared-intel
+CFLAGS_DEBUG = -O0
+
+CFLAGS = $(CFLAGS_FAST)
+
+##### NetCDF setting
+
+NETCDFDIR = /usr/local/netcdf-4.7.0
+NETCDFINC = -I$(NETCDFDIR)/include
+NETCDFLIB = -L$(NETCDFDIR)/lib -lnetcdff
+
+##### Linker setting
+
+LD      = $(FC)
+LDFLAGS = $(FFLAGS)
+
+################################################################################
+
+##### for frontend
+INSTALL = install
+AR      = ar
+ARFLAGS = rv
+RANLIB  = ranlib
+JOBSUB  = sh
+
+RM        = rm
+RMFLAGS   = -f
+F2PY      = f2py
+FCOMPILER = intelem

@@ -1,0 +1,70 @@
+################################################################################
+#
+# ------ For Linux & intel fortran&C & openmpi -----
+#
+################################################################################
+
+##### Fortran setting
+
+FC  = mpif90
+
+FFLAGS_COMMON =
+
+FFLAGS_CORE = -cpp -m64 -fPIC                                                               \
+              -std=f2008 -fall-intrinsics -pedantic-errors                                  \
+              -fconvert=big-endian -frecord-marker=4 -ffree-form -ffree-line-length-none
+
+FFLAGS_FAST  = -O3 $(FFLAGS_CORE)                                       \
+               -funroll-loops -finline-functions -fprefetch-loop-arrays \
+               -mcmodel=medium
+
+FFLAGS_DEBUG = -O0 $(FFLAGS_CORE) -fbounds-check                                                    \
+               -ffpe-trap=invalid,zero,overflow                                                     \
+               -finit-integer=-32768 -finit-real=nan -finit-logical=false -finit-character=9        \
+               -Wall -Wextra -Wcharacter-truncation -Wunderflow -Warray-temporaries -Wuninitialized \
+               -g -fbacktrace
+
+# if ILS_DEBUG=T is set, FFLAGS_DEBUG is selected in Mkinclude
+
+##### C setting
+
+CC  = mpicc
+
+CFLAGS_FAST  = -O3 -m64
+CFLAGS_DEBUG = -O0 -m64 -g
+
+CFLAGS = $(CFLAGS_FAST)
+
+##### C++ setting
+
+CXX = mpicxx
+
+CXXFLAGS_FAST  = -O2 -m64 -std=c++11
+CXXFLAGS_DEBUG = -O0 -m64 -g -std=c++11
+
+##### NetCDF setting
+
+# NETCDFDIR =
+NETCDFDIR = /home/arakawa/local/netcdf4-gnu-fortran/4.5.4
+NETCDFINC = -I$(NETCDFDIR)/include
+NETCDFLIB = -L$(NETCDFDIR)/lib -lnetcdff
+
+##### Linker setting
+
+LD      = $(FC)
+LDFLAGS = $(FFLAGS)
+
+################################################################################
+
+##### for frontend
+INSTALL = install
+AR      = ar
+ARFLAGS = rv
+RANLIB  = ranlib
+JOBSUB  = sh
+
+RM        = rm
+RMFLAGS   = -f
+F2PY      = f2py
+FCOMPILER = intelem
+

@@ -1,0 +1,47 @@
+################################################################################
+#
+# ------ For Earch Simulator 3 -----
+#
+################################################################################
+
+##### Fortran setting
+
+ FC = sxmpif90
+ FFLAGS_COMMON = -EP -DNO_F2003  -f4
+ FFLAGS_FAST   = $(FFLAGS_COMMON) -pi -R2 -C vopt -Wf"-pvctl fullmsg"
+# FFLAGS_FAST   = $(FFLAGS_COMMON) -R2 -C debug
+ FFLAGS_DEBUG  = $(FFLAGS_COMMON) -R2 -C debug
+
+# if ILS_DEBUG=T is set, FFLAGS_DEBUG is selected in Mkinclude
+
+##### C setting
+ CC = sxmpic++
+ CFLAGS_FAST  = -R diaglist fmtlist -pvctl fullmsg
+ CFLAGS_DEBUG = 
+
+CFLAGS = $(CFLAGS_FAST)
+
+##### NetCDF setting
+
+NETCDFDIR = /SX/usr/local/netcdf-4.1.3
+NETCDFINC = -I$(NETCDFDIR)/include -size_t64
+NETCDFLIB = -L$(NETCDFDIR)/lib  -lnetcdff -lnetcdf -l hdf5_hl -lhdf5 -lz
+
+##### Linker setting
+
+LD      = $(FC)
+LDFLAGS = $(FFLAGS)
+
+################################################################################
+
+##### for frontend
+INSTALL = install
+AR      = sxar
+ARFLAGS = rv
+RANLIB  = touch
+JOBSUB  = sh
+
+RM        = rm
+RMFLAGS   = -f
+F2PY      = f2py
+FCOMPILER = intelem

@@ -1,0 +1,46 @@
+################################################################################
+#
+# ------ For Earch Simulator 4 -----
+#
+################################################################################
+
+##### Fortran setting
+
+FC = mpinfort
+# FC = mpinfort -ftrace
+FFLAGS_FAST   = -fpp -O3 -finline-functions
+FFLAGS_DEBUG  = -report-all -fpp -traceback=verbose
+
+# if ILS_DEBUG=T is set, FFLAGS_DEBUG is selected in Mkinclude
+
+##### C setting
+ CC = mpinc++
+ CFLAGS_FAST  =
+ CFLAGS_DEBUG = -report-all
+
+CFLAGS = $(CFLAGS_FAST)
+
+##### NetCDF setting
+
+NETCDFDIR = /opt/share/NetCDF4_ve/netcdf-fortran/4.5.2
+NETCDFINC = -I$(NETCDFDIR)/include
+NETCDFLIB = -lnetcdff -lnetcdf -lhdf5_hl -lhdf5 -lsz -lz
+
+##### Linker setting
+
+LD      = $(FC)
+LDFLAGS = $(FFLAGS)
+
+################################################################################
+
+##### for frontend
+INSTALL = install
+AR      = nar
+ARFLAGS = vru
+RANLIB  = touch
+JOBSUB  = sh
+
+RM        = rm
+RMFLAGS   = -f
+F2PY      = f2py
+FCOMPILER = intelem

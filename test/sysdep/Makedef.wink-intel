@@ -1,0 +1,71 @@
+################################################################################
+#
+# ------ For Linux & intel fortran&C & openmpi -----
+#
+################################################################################
+
+##### Fortran setting
+
+FC  = mpiifx
+
+FFLAGS_COMMON =
+
+FFLAGS_FAST  = -fPIC -fpp -m64 -O3 -xHost -free           \
+               -assume byterecl -convert big_endian \
+               -fp-model source                     \
+               -mcmodel=medium -shared-intel        \
+               -heap-arrays        \
+               $(FFLAGS_COMMON)
+
+FFLAGS_DEBUG = -fPIC -fpp -m64 -O0 -free                  \
+               -assume byterecl -convert big_endian \
+               -fpe0 -fp-model source               \
+               -check all -warn all -g -traceback   \
+               -mcmodel=medium -shared-intel        \
+               -heap-arrays        \
+               $(FFLAGS_COMMON)
+
+# if ILS_DEBUG=T is set, FFLAGS_DEBUG is selected in Mkinclude
+
+##### C setting
+
+CC = mpiicx
+
+CFLAGS_FAST  = -O3 -xHost -ip -ftz -mcmodel=medium -shared-intel
+CFLAGS_DEBUG = -O0
+
+CFLAGS = $(CFLAGS_FAST)
+
+##### C++ setting
+
+CXX = mpiicpx
+
+CXXFLAGS_FAST  = -O2 -m64 -std=c++11
+CXXFLAGS_DEBUG = -O0 -m64 -g -std=c++11
+
+##### NetCDF setting
+
+# NETCDFDIR =
+NETCDFDIR = /home/fedora/netcdf-intel
+NETCDFINC = -I$(NETCDFDIR)/include
+NETCDFLIB = -L$(NETCDFDIR)/lib -lnetcdff
+
+##### Linker setting
+
+LD      = $(FC)
+LDFLAGS = $(FFLAGS)
+
+################################################################################
+
+##### for frontend
+INSTALL = install
+AR      = ar
+ARFLAGS = rv
+RANLIB  = ranlib
+JOBSUB  = sh
+
+RM        = rm
+RMFLAGS   = -f
+F2PY      = f2py
+FCOMPILER = intelem
+

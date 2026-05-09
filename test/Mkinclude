@@ -1,0 +1,27 @@
+# System: set SYSTEM to match your environment, or override on command line
+# Available: Linux64-gnu-ompi, Linux64-intel-impi, Linux64-intel-ompi,
+#            MacOSX-gnu-ompi, yumyum-gnu, yumyum-intel, wink-intel, ...
+SYSTEM ?= Linux64-gnu-ompi
+
+# TOPDIR must point to the rjn/test/ directory (set by the including Makefile):
+#   rjn/test/Makefile      -> TOPDIR = .
+#   rjn/test/src/Makefile  -> TOPDIR = ..
+#   rjn/test/run/Makefile  -> TOPDIR = ..
+
+# Output directories (relative to TOPDIR = rjn/test/)
+BINDIR  = $(TOPDIR)/bin
+LIBDIR  = $(TOPDIR)/lib
+MODDIR  = $(TOPDIR)/include
+
+# rjn source directory and library
+RJNSRCDIR = $(TOPDIR)/../src
+RJNLIB    = $(LIBDIR)/librjn.a
+
+# Include system-dependent settings
+include $(TOPDIR)/sysdep/Makedef.$(SYSTEM)
+
+ifeq ($(ILS_DEBUG),T)
+   CXXFLAGS = $(CXXFLAGS_DEBUG)
+else
+   CXXFLAGS = $(CXXFLAGS_FAST)
+endif

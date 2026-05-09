@@ -1,0 +1,56 @@
+################################################################################
+#
+# ------ For Linux64 & pgi fortran&C & openmpi -----
+#
+################################################################################
+
+##### Fortran setting
+
+FC  = mpif90
+
+FFLAGS_FAST  = -Mpreprocess -m64 -fast -Mfreeform     \
+               -Mbyteswapio -Mneginfo                 \
+               -Mflushz -Mfprelaxed -Mfpapprox -Kieee \
+               -Mvect=assoc
+
+FFLAGS_DEBUG = -Mpreprocess -m64 -O0 -Mfreeform \
+               -Mbyteswapio -Minfo              \
+               -Mflushz -Ktrap=fp               \
+               -Mbounds -Mstandard              \
+               -g -traceback
+
+# if ILS_DEBUG=T is set, FFLAGS_DEBUG is selected in Mkinclude
+
+##### C setting
+
+CC  = mpicc
+
+CFLAGS_FAST  = -fast
+CFLAGS_DEBUG = -O0
+
+CFLAGS = $(CFLAGS_FAST)
+
+##### C++ setting
+
+CXX = mpicxx
+
+CXXFLAGS_FAST  = -O2 -std=c++11
+CXXFLAGS_DEBUG = -O0 -g -std=c++11
+
+##### Linker setting
+
+LD      = $(FC)
+LDFLAGS = $(FFLAGS)
+
+################################################################################
+
+##### for frontend
+INSTALL = install
+AR      = ar
+ARFLAGS = r
+RANLIB  = ranlib
+
+RM        = rm
+RMFLAGS   = -f
+F2PY      = f2py
+FCOMPILER = gnu95

@@ -1,0 +1,19 @@
+# Build artifacts
+*.o
+*.a
+
+# Test binaries
+test/src/comp1_cpp
+test/src/comp2_cpp
+test/run/comp1_cpp
+test/run/comp2_cpp
+
+# Build output directories
+test/lib/
+test/include/
+test/bin/
+
+# Run output files
+test/run/fort.*
+test/run/*.log*
+test/run/cpp_fort/
