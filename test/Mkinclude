@@ -22,6 +22,17 @@ include $(TOPDIR)/sysdep/Makedef.$(SYSTEM)
 
 ifeq ($(ILS_DEBUG),T)
    CXXFLAGS = $(CXXFLAGS_DEBUG)
+   FFLAGS   = $(FFLAGS_DEBUG)
 else
    CXXFLAGS = $(CXXFLAGS_FAST)
+   FFLAGS   = $(FFLAGS_FAST)
+endif
+
+# Fortran module output directory flag:
+#   gfortran / mpifort (GNU)  → -J <dir>
+#   ifort / ifx / mpiifort    → -module <dir>
+ifneq (,$(findstring ifort,$(FC))$(findstring ifx,$(FC)))
+  MODFLAG = -module $(MODDIR)
+else
+  MODFLAG = -J$(MODDIR)
 endif

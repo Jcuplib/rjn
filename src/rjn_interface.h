@@ -6,6 +6,7 @@
  */
 
 #include <stdint.h>
+#include <stdio.h>
 #include "rjn_constant.h"
 #include "rjn_exchange_class.h"
 
@@ -23,6 +24,10 @@ typedef struct {
     char grid_name[STR_SHORT];
     char data_name[STR_SHORT];
 } rjn_varg_type;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* -----------------------------------------------------------------------
  * Lifecycle
@@ -233,3 +238,7 @@ void rjn_recv_array_str(const char* my_comp_name, const char* send_comp_name,
 /* Global communicator set/get (delegated to jml_set/get_global_comm) */
 void rjn_set_world(int global_comm);
 int  rjn_get_world(void);
+
+#ifdef __cplusplus
+}
+#endif

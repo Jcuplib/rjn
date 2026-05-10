@@ -1,7 +1,7 @@
 TOPDIR = ..
 include $(TOPDIR)/Mkinclude
 
-TESTSRCDIR = $(TOPDIR)/src
+TESTSRCDIR = $(TOPDIR)/src_fort
 
 all: setup librjn tests
 
@@ -14,13 +14,13 @@ librjn: setup
 
 tests: librjn
 	$(MAKE) -C $(TESTSRCDIR)
-	cp $(TESTSRCDIR)/comp1_cpp .
-	cp $(TESTSRCDIR)/comp2_cpp .
+	cp $(TESTSRCDIR)/comp1 .
+	cp $(TESTSRCDIR)/comp2 .
 
 clean:
 	$(MAKE) -C $(TESTSRCDIR) clean
-	-$(RM) -f comp1_cpp comp2_cpp
+	-$(RM) -f comp1 comp2
 
 distclean: clean
-	-$(MAKE) -C $(RJNSRCDIR) TOPDIR=$(abspath $(TOPDIR)) clean
+	$(MAKE) -C $(RJNSRCDIR) TOPDIR=$(abspath $(TOPDIR)) clean
 	$(RM) -rf $(LIBDIR) $(MODDIR)
