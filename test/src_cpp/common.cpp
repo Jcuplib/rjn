@@ -184,7 +184,8 @@ void cal_and_set_map(const char* send_comp, const char* send_grid,
                               &table_size);
         }
         /* broadcast table_size to other ranks in this component */
-        MPI_Bcast(&table_size, 1, MPI_INT, 0, (MPI_Comm)my_comm);
+        MPI_Comm local_comm = MPI_Comm_f2c((MPI_Fint)my_comm);
+        MPI_Bcast(&table_size, 1, MPI_INT, 0, local_comm);
 
         /* send table_size to send_comp */
         int_array[0] = table_size;

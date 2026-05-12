@@ -31,7 +31,8 @@ endif
 # Fortran module output directory flag:
 #   gfortran / mpifort (GNU)  → -J <dir>
 #   ifort / ifx / mpiifort    → -module <dir>
-ifneq (,$(findstring ifort,$(FC))$(findstring ifx,$(FC)))
+FC_BASENAME := $(notdir $(FC))
+ifneq (,$(filter ifort ifx mpiifort mpiifx,$(FC_BASENAME)))
   MODFLAG = -module $(MODDIR)
 else
   MODFLAG = -J$(MODDIR)

@@ -20,18 +20,19 @@ static int64_t   s_MPI_MAX_TAG = 32767;
 /* Communicator type (mirrors Fortran comm_type) */
 struct CommType {
     int group_id;
-    int group;
+    MPI_Group group;
+    int group_fint;
     int num_of_pe;
     int root_rank;
     int my_rank;
     int leader_rank;
-    int mpi_comm;
+    MPI_Comm mpi_comm;
     int pe_offset;
     CommType* inter_comm; /* array of size num_of_total_component */
 };
 
 /* Module-level static state */
-static int        s_GLOBAL_COMM = MPI_COMM_WORLD;
+static MPI_Comm   s_GLOBAL_COMM = MPI_COMM_WORLD;
 static CommType   s_global;
 static CommType   s_leader;
 static int*       s_leader_pe        = NULL; /* 0-based index by comp_id-1 */
@@ -63,6 +64,7 @@ static int          s_irecv_capacity = 0;
 static void init_comm(CommType* comm) {
     comm->group_id    = MPI_UNDEFINED;
     comm->group       = MPI_GROUP_NULL;
+    comm->group_fint  = (int)MPI_Group_c2f(MPI_GROUP_NULL);
     comm->num_of_pe   = MPI_UNDEFINED;
     comm->root_rank   = MPI_UNDEFINED;
     comm->my_rank     = MPI_UNDEFINED;
@@ -107,21 +109,21 @@ static void check_buffer_size(int data_size) {
 /* ===== Public API ===== */
 
 void jml_set_global_comm(int global_comm) {
-    s_GLOBAL_COMM = global_comm;
+    s_GLOBAL_COMM = MPI_Comm_f2c((MPI_Fint)global_comm);
 }
 
 int jml_get_global_comm(void) {
-    return s_GLOBAL_COMM;
+    return (int)MPI_Comm_c2f(s_GLOBAL_COMM);
 }
 
 void jml_init(void) {
     int is_initialized;
     int flag;
-    void* attr_val;
     MPI_Initialized(&is_initialized);
     if (!is_initialized) MPI_Init(NULL, NULL);
 
     MPI_Comm_group(s_GLOBAL_COMM, &s_global.group);
+    s_global.group_fint = (int)MPI_Group_c2f(s_global.group);
     MPI_Comm_size(s_GLOBAL_COMM, &s_global.num_of_pe);
     MPI_Comm_rank(s_GLOBAL_COMM, &s_global.my_rank);
     s_global.mpi_comm  = s_GLOBAL_COMM;
@@ -153,9 +155,9 @@ void jml_init(void) {
     }
 
     {
-        int tag_ub;
-        MPI_Comm_get_attr(s_GLOBAL_COMM, MPI_TAG_UB, &tag_ub, &flag);
-        if (flag) s_MPI_MAX_TAG = tag_ub;
+        void* tag_ub_attr = NULL;
+        MPI_Comm_get_attr(s_GLOBAL_COMM, MPI_TAG_UB, &tag_ub_attr, &flag);
+        if (flag && tag_ub_attr) s_MPI_MAX_TAG = *(int*)tag_ub_attr;
         else      s_MPI_MAX_TAG = 32767;
     }
 }
@@ -166,6 +168,7 @@ static void create_new_communicator(int color, int key, CommType* comm) {
     if (comm->mpi_comm != MPI_COMM_NULL) {
         comm->root_rank = 0;
         MPI_Comm_group(comm->mpi_comm, &comm->group);
+        comm->group_fint = (int)MPI_Group_c2f(comm->group);
         MPI_Comm_size(comm->mpi_comm, &comm->num_of_pe);
         MPI_Comm_rank(comm->mpi_comm, &comm->my_rank);
         if (comm->my_rank == 0) {
@@ -175,7 +178,8 @@ static void create_new_communicator(int color, int key, CommType* comm) {
 }
 
 static void create_intercomponent_communicator(CommType* comm1, CommType* comm2) {
-    int new_comm, new_size, new_rank;
+    MPI_Comm new_comm;
+    int new_size, new_rank;
     int color = MPI_UNDEFINED;
     if (is_my_component(comm1) || is_my_component(comm2)) color = 1;
     MPI_Comm_split(s_global.mpi_comm, color, 0, &new_comm);
@@ -262,7 +266,7 @@ void jml_create_communicator(const int* my_comp_id, int n) {
         MPI_Bcast(&s_local[i].num_of_pe, 1, MPI_INT, s_local[i].leader_rank, s_global.mpi_comm);
     }
     for (i = 0; i < s_num_of_total_component; i++) {
-        MPI_Bcast(&s_local[i].group, 1, MPI_INT, s_local[i].leader_rank, s_global.mpi_comm);
+        MPI_Bcast(&s_local[i].group_fint, 1, MPI_INT, s_local[i].leader_rank, s_global.mpi_comm);
     }
     for (i = 0; i < s_num_of_total_component; i++) {
         MPI_Bcast(&s_local[i].group_id, 1, MPI_INT, s_local[i].leader_rank, s_global.mpi_comm);
@@ -283,7 +287,8 @@ void jml_create_communicator(const int* my_comp_id, int n) {
 
 void jml_finalize(int is_call_finalize) {
     int is_finalized;
-    int buf_addr, buf_size;
+    void* buf_addr;
+    int buf_size;
     if (s_is_use_buffer) MPI_Buffer_detach(&buf_addr, &buf_size);
     if (s_local_buffer) { free(s_local_buffer); s_local_buffer = NULL; }
     if (!is_call_finalize) return;
@@ -297,22 +302,22 @@ void jml_abort(void) {
     MPI_Abort(s_global.mpi_comm, 0);
 }
 
-int jml_GetCommGlobal(void)      { return s_global.mpi_comm; }
+int jml_GetCommGlobal(void)      { return (int)MPI_Comm_c2f(s_global.mpi_comm); }
 int jml_GetMyrankGlobal(void)    { return s_global.my_rank; }
 int jml_GetCommSizeGlobal(void)  { return s_global.num_of_pe; }
-int jml_GetCommLeader(void)      { return s_leader.mpi_comm; }
+int jml_GetCommLeader(void)      { return (int)MPI_Comm_c2f(s_leader.mpi_comm); }
 int jml_isRoot(void)             { return (s_global.root_rank == s_global.my_rank); }
 
 int jml_GetComm(int component_id) {
     set_current_component(component_id);
-    return s_current_comp->mpi_comm;
+    return (int)MPI_Comm_c2f(s_current_comp->mpi_comm);
 }
 
-int jml_GetCommNULL(void) { return MPI_COMM_NULL; }
+int jml_GetCommNULL(void) { return (int)MPI_Comm_c2f(MPI_COMM_NULL); }
 
 int jml_GetMyGroup(int component_id) {
     set_current_component(component_id);
-    return s_current_comp->group;
+    return s_current_comp->group_fint;
 }
 
 int jml_GetMyrank(int component_id) {

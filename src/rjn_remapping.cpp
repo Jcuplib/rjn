@@ -24,7 +24,7 @@ static int      s_my_rank = 0;
  * ----------------------------------------------------------------------- */
 void init_remapping(int local_comm)
 {
-    s_my_comm = (MPI_Comm)local_comm;
+    s_my_comm = MPI_Comm_f2c((MPI_Fint)local_comm);
     MPI_Comm_size(s_my_comm, &s_my_size);
     MPI_Comm_rank(s_my_comm, &s_my_rank);
 }

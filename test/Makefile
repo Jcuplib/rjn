@@ -12,7 +12,8 @@ librjn: setup
 	$(MAKE) -C $(RJNSRCDIR) TOPDIR=$(abspath $(TOPDIR)) all
 
 tests: librjn
-	$(MAKE) -C src
+	$(MAKE) -C src_fort
+	$(MAKE) -C src_cpp
 
 allclean: clean
 	$(RM) -rf $(BINDIR)
@@ -20,5 +21,6 @@ allclean: clean
 	$(RM) -rf $(MODDIR)
 
 clean:
-	$(MAKE) -C src clean
+	$(MAKE) -C src_fort clean
+	$(MAKE) -C src_cpp clean
 	-$(MAKE) -C $(RJNSRCDIR) TOPDIR=$(abspath $(TOPDIR)) clean

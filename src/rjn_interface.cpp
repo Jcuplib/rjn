@@ -257,7 +257,8 @@ void rjn_def_grid(const int* grid_index, int n,
  * ----------------------------------------------------------------------- */
 void rjn_end_grid_def(void)
 {
-    MPI_Barrier(MPI_COMM_WORLD);
+    MPI_Comm global_comm = MPI_Comm_f2c((MPI_Fint)jml_GetCommGlobal());
+    MPI_Barrier(global_comm);
 }
 
 /* -----------------------------------------------------------------------
