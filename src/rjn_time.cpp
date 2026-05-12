@@ -1,7 +1,7 @@
 /*
  * rjn_time.cpp
  * Converted from rjn_time.f90
- * Copyright (c) 2011, arakawa@rist.jp
+ * Copyright (c) 2026, arakawa@climtech.jp
  */
 
 #include "rjn_time.h"

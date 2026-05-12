@@ -2,7 +2,7 @@
 /*
  * rjn_grid_class.h
  * Converted from rjn_grid_class.f90
- * Copyright (c) 2011, arakawa@rist.jp
+ * Copyright (c) 2026, arakawa@climtech.jp
  */
 
 #include "rjn_constant.h"

@@ -2,7 +2,7 @@
 /*
  * rjn_data_class.h
  * Converted from rjn_data_class.f90
- * Copyright (c) 2011, arakawa@rist.jp
+ * Copyright (c) 2026, arakawa@climtech.jp
  */
 
 #include <stdint.h>

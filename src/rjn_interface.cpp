@@ -1,7 +1,7 @@
 /*
  * rjn_interface.cpp
  * Converted from rjn_interface.f90
- * Copyright (c) 2011, arakawa@rist.jp
+ * Copyright (c) 2026, arakawa@climtech.jp
  */
 
 #include "rjn_interface.h"

@@ -1,7 +1,7 @@
 /*
  * rjn_grid.cpp
  * Converted from rjn_grid.f90
- * Copyright (c) 2011, arakawa@rist.jp
+ * Copyright (c) 2026, arakawa@climtech.jp
  */
 
 #include "rjn_grid.h"

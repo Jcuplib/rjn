@@ -2,7 +2,7 @@
 /*
  * rjn_remapping.h
  * Converted from rjn_remapping.f90
- * Copyright (c) 2011, arakawa@rist.jp
+ * Copyright (c) 2026, arakawa@climtech.jp
  */
 
 #include <stddef.h>
