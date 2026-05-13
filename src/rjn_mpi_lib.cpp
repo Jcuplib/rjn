@@ -795,40 +795,40 @@ void jml_RecvLeader_double1d(double* data, int is, int ie, int source, int tag) 
 
 /* 2D / 3D leader variants (delegating to 1D with contiguous data) */
 void jml_SendLeader_int2d(const int* data, int is, int ie, int js, int je, int dest) {
-    jml_SendLeader_int1d(data, 0, (ie-is+1)*(je-js+1)-1, dest);
+    jml_SendLeader_int1d(data, 1, (ie-is+1)*(je-js+1), dest);
 }
 void jml_RecvLeader_int2d(int* data, int is, int ie, int js, int je, int source) {
-    jml_RecvLeader_int1d(data, 0, (ie-is+1)*(je-js+1)-1, source);
+    jml_RecvLeader_int1d(data, 1, (ie-is+1)*(je-js+1), source);
 }
 void jml_SendLeader_int3d(const int* data, int is, int ie, int js, int je, int ks, int ke, int dest) {
-    jml_SendLeader_int1d(data, 0, (ie-is+1)*(je-js+1)*(ke-ks+1)-1, dest);
+    jml_SendLeader_int1d(data, 1, (ie-is+1)*(je-js+1)*(ke-ks+1), dest);
 }
 void jml_RecvLeader_int3d(int* data, int is, int ie, int js, int je, int ks, int ke, int source) {
-    jml_RecvLeader_int1d(data, 0, (ie-is+1)*(je-js+1)*(ke-ks+1)-1, source);
+    jml_RecvLeader_int1d(data, 1, (ie-is+1)*(je-js+1)*(ke-ks+1), source);
 }
 void jml_SendLeader_float2d(const float* data, int is, int ie, int js, int je, int dest) {
-    jml_SendLeader_float1d(data, 0, (ie-is+1)*(je-js+1)-1, dest, MPI_MY_TAG);
+    jml_SendLeader_float1d(data, 1, (ie-is+1)*(je-js+1), dest, MPI_MY_TAG);
 }
 void jml_RecvLeader_float2d(float* data, int is, int ie, int js, int je, int source) {
-    jml_RecvLeader_float1d(data, 0, (ie-is+1)*(je-js+1)-1, source, MPI_MY_TAG);
+    jml_RecvLeader_float1d(data, 1, (ie-is+1)*(je-js+1), source, MPI_MY_TAG);
 }
 void jml_SendLeader_float3d(const float* data, int is, int ie, int js, int je, int ks, int ke, int dest) {
-    jml_SendLeader_float1d(data, 0, (ie-is+1)*(je-js+1)*(ke-ks+1)-1, dest, MPI_MY_TAG);
+    jml_SendLeader_float1d(data, 1, (ie-is+1)*(je-js+1)*(ke-ks+1), dest, MPI_MY_TAG);
 }
 void jml_RecvLeader_float3d(float* data, int is, int ie, int js, int je, int ks, int ke, int source) {
-    jml_RecvLeader_float1d(data, 0, (ie-is+1)*(je-js+1)*(ke-ks+1)-1, source, MPI_MY_TAG);
+    jml_RecvLeader_float1d(data, 1, (ie-is+1)*(je-js+1)*(ke-ks+1), source, MPI_MY_TAG);
 }
 void jml_SendLeader_double2d(const double* data, int is, int ie, int js, int je, int dest) {
-    jml_SendLeader_double1d(data, 0, (ie-is+1)*(je-js+1)-1, dest, MPI_MY_TAG);
+    jml_SendLeader_double1d(data, 1, (ie-is+1)*(je-js+1), dest, MPI_MY_TAG);
 }
 void jml_RecvLeader_double2d(double* data, int is, int ie, int js, int je, int source) {
-    jml_RecvLeader_double1d(data, 0, (ie-is+1)*(je-js+1)-1, source, MPI_MY_TAG);
+    jml_RecvLeader_double1d(data, 1, (ie-is+1)*(je-js+1), source, MPI_MY_TAG);
 }
 void jml_SendLeader_double3d(const double* data, int is, int ie, int js, int je, int ks, int ke, int dest) {
-    jml_SendLeader_double1d(data, 0, (ie-is+1)*(je-js+1)*(ke-ks+1)-1, dest, MPI_MY_TAG);
+    jml_SendLeader_double1d(data, 1, (ie-is+1)*(je-js+1)*(ke-ks+1), dest, MPI_MY_TAG);
 }
 void jml_RecvLeader_double3d(double* data, int is, int ie, int js, int je, int ks, int ke, int source) {
-    jml_RecvLeader_double1d(data, 0, (ie-is+1)*(je-js+1)*(ke-ks+1)-1, source, MPI_MY_TAG);
+    jml_RecvLeader_double1d(data, 1, (ie-is+1)*(je-js+1)*(ke-ks+1), source, MPI_MY_TAG);
 }
 
 /* --- SendModel / RecvModel --- */
@@ -899,12 +899,25 @@ void jml_RecvModel_double1d(int comp, int target_comp, double* data, int n, int 
 }
 
 void jml_SendModel_float2d(int comp, int target_comp, const float* data, int n1, int n2, int dest, int tag) {
-    jml_SendModel_double1d(comp, target_comp, (const double*)(void*)data,
-                           n1*n2*sizeof(float)/sizeof(double), dest, tag);
+    int dest_rank = get_dest_rank_model(comp, target_comp, dest);
+    int my_rank   = s_local[comp-1].inter_comm[target_comp-1].my_rank;
+    MPI_Comm comm = get_model_comm(comp, target_comp);
+    int n = n1*n2;
+    MPI_Request req; MPI_Status st;
+    if (dest_rank == my_rank) {
+        MPI_Bsend((void*)data, n, MPI_FLOAT, dest_rank, tag, comm);
+    } else {
+        MPI_Isend((void*)data, n, MPI_FLOAT, dest_rank, tag, comm, &req);
+        MPI_Wait(&req, &st);
+    }
 }
 void jml_RecvModel_float2d(int comp, int target_comp, float* data, int n1, int n2, int source, int tag) {
-    jml_RecvModel_double1d(comp, target_comp, (double*)(void*)data,
-                           n1*n2*sizeof(float)/sizeof(double), source, tag);
+    int source_rank = get_source_rank_model(comp, target_comp, source);
+    MPI_Comm comm   = get_model_comm(comp, target_comp);
+    int n = n1*n2;
+    MPI_Request req; MPI_Status st;
+    MPI_Irecv(data, n, MPI_FLOAT, source_rank, tag, comm, &req);
+    MPI_Wait(&req, &st);
 }
 void jml_SendModel_double2d(int comp, int target_comp, const double* data, int n1, int n2, int dest, int tag) {
     jml_SendModel_double1d(comp, target_comp, data, n1*n2, dest, tag);

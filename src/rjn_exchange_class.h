@@ -16,7 +16,7 @@ typedef struct {
     int    target_rank;
     int    num_of_data;
     int    num_of_layer;
-    double* buffer;       /* malloc'd [num_of_data * num_of_layer], row-major */
+    double* buffer;       /* malloc'd [num_of_data * num_of_layer], column-major */
 } buffer_class;
 
 /* -----------------------------------------------------------------------

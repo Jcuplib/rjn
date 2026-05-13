@@ -201,7 +201,7 @@ static void recv_send_grid_index(exchange_class* self)
     exchange_buffer = (int*)calloc(ex_size, sizeof(int));
 
     for (i = 0; i < self->ex_map.num_of_exchange_rank; i++) {
-        int data_tag    = self->ex_map.exchange_rank[i];
+        int data_tag    = jml_GetMyrank(self->recv_comp_id);
         int num_of_data = self->ex_map.num_of_exchange[i];
         int offset      = self->ex_map.offset[i];
         jml_IRecvModel2_int1d(self->recv_comp_id, self->send_comp_id,
@@ -660,8 +660,8 @@ void exchange_class_target_2_exchange_buffer(const exchange_class* self,
         offset      = self->ex_map.offset[i];
         for (r = 0; r < num_of_data; r++)
             for (c = 0; c < num_of_layer; c++)
-                exchange_buffer[(offset + r) * exbuf_cols + c] =
-                    target_buffer[i].buffer[r * target_buffer[i].num_of_layer + c];
+                exchange_buffer[(offset + r) + c * exbuf_rows] =
+                    target_buffer[i].buffer[r + c * target_buffer[i].num_of_data];
     }
 }
 
@@ -738,9 +738,9 @@ void exchange_class_send_data_2d(exchange_class* self,
 {
     int i;
     double* intpl_buffer = NULL;
+    int intpl_size = 0;
 
     if (self->intpl_flag) {
-        int intpl_size = 0;
         for (i = 0; i < self->ex_map.num_of_exchange_rank; i++)
             intpl_size += self->ex_map.num_of_exchange[i];
         intpl_buffer = (double*)malloc(intpl_size * num_of_layer * sizeof(double));
@@ -758,13 +758,13 @@ void exchange_class_send_data_2d(exchange_class* self,
         if (self->intpl_flag) {
             for (r = 0; r < num_of_data; r++)
                 for (c = 0; c < num_of_layer; c++)
-                    exchange_buffer[i].buffer[r * num_of_layer + c] =
-                        intpl_buffer[(offset + r) * num_of_layer + c];
+                    exchange_buffer[i].buffer[r + c * num_of_data] =
+                        intpl_buffer[(offset + r) + c * intpl_size];
         } else {
             for (r = 0; r < num_of_data; r++)
                 for (c = 0; c < num_of_layer; c++)
-                    exchange_buffer[i].buffer[r * num_of_layer + c] =
-                        data[(offset + r) * num_of_layer + c];
+                    exchange_buffer[i].buffer[r + c * num_of_data] =
+                        data[(offset + r) + c * n1];
         }
 
         jml_ISendModel3_double2d(self->send_comp_id, self->recv_comp_id,
@@ -801,8 +801,8 @@ void exchange_class_buffer_2_recv_data(const exchange_class* self,
     for (k = 0; k < rd_cols; k++) {
         for (i = 0; i < eb_rows; i++) {
             int recv_index = self->recv_conv_table[i] - 1;  /* 0-based */
-            recv_data[recv_index * rd_cols + k] +=
-                exchange_buffer[i * eb_cols + k];
+            recv_data[recv_index + k * rd_rows] +=
+                exchange_buffer[i + k * eb_rows];
         }
     }
 }
@@ -847,6 +847,7 @@ void exchange_class_interpolate_data(exchange_class* self,
                                 num_of_layer, intpl_tag);
         break;
     }
+
 }
 
 static void interpolate_data_serial(exchange_class* self,
@@ -875,19 +876,19 @@ static void interpolate_data_serial(exchange_class* self,
             for (i = 0; i < self->index_size; i++) {
                 int sg = self->send_conv_table[i] - 1;
                 int rg = self->recv_conv_table[i] - 1;
-                double sv = send_data[sg * sd_cols + k];
+                double sv = send_data[sg + k * sd_rows];
                 if (sv == missing_value) {
                     check_data[rg] = 1;
                 } else {
-                    recv_data[rg * rd_cols + k] += sv * self->coef[i];
+                    recv_data[rg + k * rd_rows] += sv * self->coef[i];
                     weight_data[rg] += self->coef[i];
                 }
             }
             for (i = 0; i < rd_rows; i++) {
                 if (weight_data[i] > 0.0)
-                    recv_data[i * rd_cols + k] /= weight_data[i];
+                    recv_data[i + k * rd_rows] /= weight_data[i];
                 else if (check_data[i])
-                    recv_data[i * rd_cols + k] = missing_value;
+                    recv_data[i + k * rd_rows] = missing_value;
             }
         }
         free(weight_data);
@@ -897,7 +898,7 @@ static void interpolate_data_serial(exchange_class* self,
             for (i = 0; i < self->index_size; i++) {
                 int sg = self->send_conv_table[i] - 1;
                 int rg = self->recv_conv_table[i] - 1;
-                recv_data[rg * rd_cols + k] += send_data[sg * sd_cols + k] * self->coef[i];
+                recv_data[rg + k * rd_rows] += send_data[sg + k * sd_rows] * self->coef[i];
             }
         }
     }
@@ -930,20 +931,20 @@ static void interpolate_data_parallel(exchange_class* self,
                 for (i = 0; i < ct->table_size; i++) {
                     int sg = ct->send_conv_table[i] - 1;
                     int rg = ct->recv_conv_table[i] - 1;
-                    double sv = send_data[sg * sd_cols + k];
+                    double sv = send_data[sg + k * sd_rows];
                     if (sv == missing_value) {
                         check_data[rg] = 1;
                     } else {
-                        recv_data[rg * rd_cols + k] += sv * ct->coef[i];
+                        recv_data[rg + k * rd_rows] += sv * ct->coef[i];
                         weight_data[rg] += ct->coef[i];
                     }
                 }
             }
             for (i = 0; i < rd_rows; i++) {
                 if (weight_data[i] > 0.0)
-                    recv_data[i * rd_cols + k] /= weight_data[i];
+                    recv_data[i + k * rd_rows] /= weight_data[i];
                 else if (check_data[i])
-                    recv_data[i * rd_cols + k] = missing_value;
+                    recv_data[i + k * rd_rows] = missing_value;
             }
         }
         free(weight_data);
@@ -955,7 +956,7 @@ static void interpolate_data_parallel(exchange_class* self,
                 for (i = 0; i < ct->table_size; i++) {
                     int sg = ct->send_conv_table[i] - 1;
                     int rg = ct->recv_conv_table[i] - 1;
-                    recv_data[rg * rd_cols + k] += send_data[sg * sd_cols + k] * ct->coef[i];
+                    recv_data[rg + k * rd_rows] += send_data[sg + k * sd_rows] * ct->coef[i];
                 }
             }
         }

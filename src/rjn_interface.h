@@ -174,7 +174,8 @@ void rjn_get_data_1d(const char* data_name,
 void rjn_get_data_1d_ptr(const rjn_varg_type* varg_ptr,
                          double* data, int n_data, int* is_recv_ok);
 
-/* Send 2D data by name; data is [n1 * n2] row-major */
+/* Send 2D data by name; data is [n1 * n2] with the first dimension contiguous
+ * (Fortran-compatible layout: data[i + k*n1]). */
 void rjn_put_data_25d(const char* data_name,
                       const double* data, int n1, int n2);
 

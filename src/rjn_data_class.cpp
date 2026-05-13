@@ -283,7 +283,7 @@ void data_class_put_data_1d(data_class* self,
 
 /* -----------------------------------------------------------------------
  * data_class_put_data_2d
- * data is [n1 * n2] row-major; first dimension = exchange_data_size,
+ * data is [n1 * n2] column-major; first dimension = exchange_data_size,
  * second = num_of_layer.
  * ----------------------------------------------------------------------- */
 void data_class_put_data_2d(data_class* self,
@@ -553,7 +553,7 @@ void data_class_get_data_1d(data_class* self,
 
 /* -----------------------------------------------------------------------
  * data_class_get_data_2d
- * data is [n1 * n2] row-major; first dimension = local grid size,
+ * data is [n1 * n2] column-major; first dimension = local grid size,
  * second = num_of_layer.
  * ----------------------------------------------------------------------- */
 void data_class_get_data_2d(data_class* self,

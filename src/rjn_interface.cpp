@@ -710,7 +710,7 @@ void rjn_send_array_real(const char* my_comp_name, const char* recv_comp_name,
     int my_model   = get_comp_id_from_name(my_comp_name);
     int recv_model = get_comp_id_from_name(recv_comp_name);
     if (jml_isLocalLeader(my_model))
-        jml_SendLeader_float1d(array, 1, n, recv_model - 1, RJN_ANY_TAG);
+        jml_SendLeader_float1d(array, 1, n, recv_model, RJN_ANY_TAG);
 }
 
 void rjn_recv_array_real(const char* my_comp_name, const char* send_comp_name,
@@ -719,7 +719,7 @@ void rjn_recv_array_real(const char* my_comp_name, const char* send_comp_name,
     int my_model   = get_comp_id_from_name(my_comp_name);
     int send_model = get_comp_id_from_name(send_comp_name);
     if (jml_isLocalLeader(my_model))
-        jml_RecvLeader_float1d(array, 1, n, send_model - 1, RJN_ANY_TAG);
+        jml_RecvLeader_float1d(array, 1, n, send_model, RJN_ANY_TAG);
     if (bcast_flag)
         jml_BcastLocal_float(my_model, array, 1, n, 0);
 }
@@ -730,7 +730,7 @@ void rjn_send_array_dbl(const char* my_comp_name, const char* recv_comp_name,
     int my_model   = get_comp_id_from_name(my_comp_name);
     int recv_model = get_comp_id_from_name(recv_comp_name);
     if (jml_isLocalLeader(my_model))
-        jml_SendLeader_double1d(array, 1, n, recv_model - 1, RJN_ANY_TAG);
+        jml_SendLeader_double1d(array, 1, n, recv_model, RJN_ANY_TAG);
 }
 
 void rjn_recv_array_dbl(const char* my_comp_name, const char* send_comp_name,
@@ -739,7 +739,7 @@ void rjn_recv_array_dbl(const char* my_comp_name, const char* send_comp_name,
     int my_model   = get_comp_id_from_name(my_comp_name);
     int send_model = get_comp_id_from_name(send_comp_name);
     if (jml_isLocalLeader(my_model))
-        jml_RecvLeader_double1d(array, 1, n, send_model - 1, RJN_ANY_TAG);
+        jml_RecvLeader_double1d(array, 1, n, send_model, RJN_ANY_TAG);
     if (bcast_flag)
         jml_BcastLocal_double(my_model, array, 1, n, 0);
 }
