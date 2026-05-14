@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata from this file."
+title: "Raijin Coupler"
+version: "0.5.1"
+authors:
+  - family-names: "Arakawa"
+    given-names: "Takashi"
+repository-code: "https://github.com/Jcuplib/rjn"
+url: "https://github.com/Jcuplib/rjn"
+date-released: "2026-05-15"
+license: BSD-3-Clause
