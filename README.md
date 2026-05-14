@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/1239250468.svg)](https://doi.org/10.5281/zenodo.20191444)
 # Raijin Coupler
 
 Raijin Coupler is a C++ implementation of the JcupLT coupling library.
