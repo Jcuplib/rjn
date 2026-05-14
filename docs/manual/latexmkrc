@@ -1,6 +1,6 @@
 $pdf_mode = 3;
-$dvipdf = 'dvipdfmx %O -o %D %S';
 $latex = 'latex %O %S';
+$dvipdf = 'dvipdfmx %O -o %D %S';
 $bibtex = 'bibtex %O %B';
 $makeindex = 'makeindex %O -o %D %S';
 $clean_ext = 'synctex.gz';
