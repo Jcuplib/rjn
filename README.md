@@ -49,3 +49,10 @@ For API documentation:
 On Fedora:
 
     sudo dnf install -y texlive-scheme-full latexmk doxygen graphviz
+
+## License
+
+This software is distributed under the BSD 3-Clause License.
+
+Raijin Coupler is derived from the Jcup/JcupLT coupling library.
+The original Jcup copyright notice is retained in the LICENSE file.
