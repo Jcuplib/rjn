@@ -37,3 +37,6 @@ docs/api/xml/
 # Fortran build files
 *.mod
 *.smod
+*.lof
+*.lot
+*.lol
