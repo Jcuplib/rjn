@@ -9,9 +9,28 @@
 #include <stdint.h>
 #include "rjn_constant.h"
 
-/* -----------------------------------------------------------------------
- * User-defined interpolation function pointer type
- * ----------------------------------------------------------------------- */
+/**
+ * @brief User-defined interpolation callback type.
+ *
+ * Register a callback of this type with rjn_set_user_interpolation() when the
+ * corresponding mapping table uses the "USER" interpolation mode. The callback
+ * receives flattened send and receive arrays, mapping indices, interpolation
+ * coefficients, layer count, conversion-table size, and the user interpolation
+ * tag from rjn_set_data().
+ *
+ * @param send_data Flattened source data.
+ * @param send_rows First dimension length of @p send_data.
+ * @param send_cols Second dimension length of @p send_data.
+ * @param recv_data Flattened destination data, updated in place.
+ * @param recv_rows First dimension length of @p recv_data.
+ * @param recv_cols Second dimension length of @p recv_data.
+ * @param send_index Source index table.
+ * @param recv_index Destination index table.
+ * @param coef Interpolation coefficient table.
+ * @param num_of_layer Number of data layers.
+ * @param num_of_conv Number of conversion-table entries.
+ * @param intpl_tag User interpolation tag.
+ */
 typedef void (*interpolation_user_ifc)(
     const double* send_data, int send_rows, int send_cols,
     double* recv_data, int recv_rows, int recv_cols,

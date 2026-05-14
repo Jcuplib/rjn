@@ -17,3 +17,23 @@ test/bin/
 test/run/fort.*
 test/run/*.log*
 test/run/cpp_fort/
+# LaTeX build files
+*.aux
+*.log
+*.toc
+*.out
+*.dvi
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+# Generated documentation
+docs/manual/*.pdf
+docs/*.pdf
+docs/api/html/
+docs/api/latex/
+docs/api/xml/
+# Fortran build files
+*.mod
+*.smod
