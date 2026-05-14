@@ -41,7 +41,7 @@ void def_grid(const int* grid_index, int n, const char* comp_name, const char* g
         rjn_error("def_grid", "too many grids");
 
     s_my_grid[s_num_of_my_grid] = grid_class_init(s_my_comp_id, s_my_rank, s_my_size);
-    grid_class_def_grid(&s_my_grid[s_num_of_my_grid], grid_index, n, comp_name, grid_name);
+    s_my_grid[s_num_of_my_grid].def_grid(grid_index, n, comp_name, grid_name);
     s_num_of_my_grid++;
 }
 
@@ -66,7 +66,7 @@ int get_num_of_my_grid(void)
  * ----------------------------------------------------------------------- */
 void get_grid_name(int grid_num, char* name_out)
 {
-    grid_class_get_grid_name(&s_my_grid[grid_num - 1], name_out);
+    s_my_grid[grid_num - 1].get_grid_name(name_out);
 }
 
 /* -----------------------------------------------------------------------
@@ -79,7 +79,7 @@ grid_class* get_grid_ptr(const char* grid_name)
     char gname[STR_SHORT];
 
     for (i = 0; i < s_num_of_my_grid; i++) {
-        grid_class_get_grid_name(&s_my_grid[i], gname);
+        s_my_grid[i].get_grid_name(gname);
         if (strcmp(gname, grid_name) == 0)
             return &s_my_grid[i];
     }

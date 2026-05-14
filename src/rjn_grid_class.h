@@ -8,9 +8,10 @@
 #include "rjn_constant.h"
 
 /* -----------------------------------------------------------------------
- * grid_class struct
+ * grid_class
  * ----------------------------------------------------------------------- */
-typedef struct {
+class grid_class {
+public:
     int  comp_id;
     int  my_rank;
     int  my_size;
@@ -18,7 +19,17 @@ typedef struct {
     char grid_name[STR_SHORT];
     int  num_of_grid_index;
     int* grid_index;   /* malloc'd array[num_of_grid_index] */
-} grid_class;
+
+    void def_grid(const int* grid_index, int n,
+                  const char* comp_name, const char* grid_name);
+    void get_grid_name(char* out) const;
+    int  get_comp_id() const;
+    int  get_my_rank() const;
+    int  get_my_size() const;
+    int  get_grid_size() const;
+    int* get_grid_index_ptr() const;
+    void free();
+};
 
 /* -----------------------------------------------------------------------
  * Constructor / destructor

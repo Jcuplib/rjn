@@ -45,8 +45,7 @@ void set_mapping_table(const char* my_name,
     s_exchange[s_num_of_exchange - 1] =
         exchange_class_init(my_name, intpl_flag, intpl_mode);
 
-    exchange_class_set_mapping_table(
-        &s_exchange[s_num_of_exchange - 1],
+    s_exchange[s_num_of_exchange - 1].set_mapping_table(
         send_comp_name, send_grid_name,
         recv_comp_name, recv_grid_name,
         map_tag, intpl_flag,
@@ -70,9 +69,8 @@ int is_exchange_assigned(const char* send_comp_name, const char* send_grid_name,
 {
     int i;
     for (i = 0; i < s_num_of_exchange; i++) {
-        if (exchange_class_is_my_exchange(&s_exchange[i],
-                                          send_comp_name, send_grid_name,
-                                          recv_comp_name, recv_grid_name, map_tag))
+        if (s_exchange[i].is_my_exchange(send_comp_name, send_grid_name,
+                                         recv_comp_name, recv_grid_name, map_tag))
             return 1;
     }
     return 0;
@@ -89,9 +87,8 @@ exchange_class* get_exchange_ptr_name(const char* send_comp_name, const char* se
     char msg[256];
 
     for (i = 0; i < s_num_of_exchange; i++) {
-        if (exchange_class_is_my_exchange(&s_exchange[i],
-                                          send_comp_name, send_grid_name,
-                                          recv_comp_name, recv_grid_name, map_tag))
+        if (s_exchange[i].is_my_exchange(send_comp_name, send_grid_name,
+                                         recv_comp_name, recv_grid_name, map_tag))
             return &s_exchange[i];
     }
 
@@ -122,7 +119,7 @@ void write_exchange(FILE* fp)
     int i;
     fwrite(&s_num_of_exchange, sizeof(int), 1, fp);
     for (i = 0; i < s_num_of_exchange; i++)
-        exchange_class_write(&s_exchange[i], fp);
+        s_exchange[i].write(fp);
 }
 
 /* -----------------------------------------------------------------------
@@ -133,5 +130,5 @@ void read_exchange(FILE* fp)
     int i;
     fread(&s_num_of_exchange, sizeof(int), 1, fp);
     for (i = 0; i < s_num_of_exchange; i++)
-        exchange_class_read(&s_exchange[i], fp);
+        s_exchange[i].read(fp);
 }

@@ -12,7 +12,8 @@
 /* -----------------------------------------------------------------------
  * data_class
  * ----------------------------------------------------------------------- */
-typedef struct {
+class data_class {
+public:
     char my_name[STR_SHORT];
     char send_comp_name[STR_SHORT];
     char send_grid_name[STR_SHORT];
@@ -47,7 +48,41 @@ typedef struct {
 
     int          num_of_target;       /* number of exchange target processes */
     buffer_class* exchange_target;    /* malloc'd [num_of_target] */
-} data_class;
+
+    void set_my_exchange(const char* send_comp_name, const char* send_grid_name,
+                         const char* recv_comp_name, const char* recv_grid_name,
+                         int map_tag);
+    exchange_class* get_my_exchange() const;
+
+    void get_my_name(char* out) const;
+    void get_send_comp_name(char* out) const;
+    void get_send_grid_name(char* out) const;
+    void get_send_data_name(char* out) const;
+    void get_recv_comp_name(char* out) const;
+    void get_recv_grid_name(char* out) const;
+    void get_recv_data_name(char* out) const;
+
+    int is_avr() const;
+    int get_intvl() const;
+    int get_time_lag() const;
+    int get_exchange_type() const;
+    int get_num_of_layer() const;
+    int get_exchange_tag() const;
+    int is_my_intpl() const;
+
+    void put_data_1d(const double* data, int n_data,
+                     int64_t next_sec, int32_t delta_t);
+    void put_data_2d(const double* data, int n1, int n2,
+                     int64_t next_sec, int32_t delta_t);
+    void recv_data_1d(int64_t current_sec);
+    void recv_data_2d(int64_t current_sec);
+    void interpolate_data_1d();
+    void interpolate_data_2d();
+    void get_data_1d(double* data, int n_data,
+                     int64_t current_sec, int* is_get_ok);
+    void get_data_2d(double* data, int n1, int n2,
+                     int64_t current_sec, int* is_get_ok);
+};
 
 /* -----------------------------------------------------------------------
  * Constructor
@@ -120,3 +155,51 @@ void data_class_get_data_1d(data_class* self,
 void data_class_get_data_2d(data_class* self,
     double* data, int n1, int n2,
     int64_t current_sec, int* is_get_ok);
+
+inline void data_class::set_my_exchange(
+    const char* send_comp_name, const char* send_grid_name,
+    const char* recv_comp_name, const char* recv_grid_name, int map_tag)
+{
+    data_class_set_my_exchange(this, send_comp_name, send_grid_name,
+                               recv_comp_name, recv_grid_name, map_tag);
+}
+
+inline exchange_class* data_class::get_my_exchange() const
+{ return data_class_get_my_exchange(this); }
+
+inline void data_class::get_my_name(char* out) const { data_class_get_my_name(this, out); }
+inline void data_class::get_send_comp_name(char* out) const { data_class_get_send_comp_name(this, out); }
+inline void data_class::get_send_grid_name(char* out) const { data_class_get_send_grid_name(this, out); }
+inline void data_class::get_send_data_name(char* out) const { data_class_get_send_data_name(this, out); }
+inline void data_class::get_recv_comp_name(char* out) const { data_class_get_recv_comp_name(this, out); }
+inline void data_class::get_recv_grid_name(char* out) const { data_class_get_recv_grid_name(this, out); }
+inline void data_class::get_recv_data_name(char* out) const { data_class_get_recv_data_name(this, out); }
+
+inline int data_class::is_avr() const { return data_class_is_avr(this); }
+inline int data_class::get_intvl() const { return data_class_get_intvl(this); }
+inline int data_class::get_time_lag() const { return data_class_get_time_lag(this); }
+inline int data_class::get_exchange_type() const { return data_class_get_exchange_type(this); }
+inline int data_class::get_num_of_layer() const { return data_class_get_num_of_layer(this); }
+inline int data_class::get_exchange_tag() const { return data_class_get_exchange_tag(this); }
+inline int data_class::is_my_intpl() const { return data_class_is_my_intpl(this); }
+
+inline void data_class::put_data_1d(const double* data, int n_data,
+    int64_t next_sec, int32_t delta_t)
+{ data_class_put_data_1d(this, data, n_data, next_sec, delta_t); }
+inline void data_class::put_data_2d(const double* data, int n1, int n2,
+    int64_t next_sec, int32_t delta_t)
+{ data_class_put_data_2d(this, data, n1, n2, next_sec, delta_t); }
+inline void data_class::recv_data_1d(int64_t current_sec)
+{ data_class_recv_data_1d(this, current_sec); }
+inline void data_class::recv_data_2d(int64_t current_sec)
+{ data_class_recv_data_2d(this, current_sec); }
+inline void data_class::interpolate_data_1d()
+{ data_class_interpolate_data_1d(this); }
+inline void data_class::interpolate_data_2d()
+{ data_class_interpolate_data_2d(this); }
+inline void data_class::get_data_1d(double* data, int n_data,
+    int64_t current_sec, int* is_get_ok)
+{ data_class_get_data_1d(this, data, n_data, current_sec, is_get_ok); }
+inline void data_class::get_data_2d(double* data, int n1, int n2,
+    int64_t current_sec, int* is_get_ok)
+{ data_class_get_data_2d(this, data, n1, n2, current_sec, is_get_ok); }

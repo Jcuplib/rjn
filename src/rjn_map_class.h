@@ -11,18 +11,20 @@
 /* -----------------------------------------------------------------------
  * target_map_info: exchange table for one target component
  * ----------------------------------------------------------------------- */
-typedef struct {
+class target_map_info {
+public:
     int  num_of_pe;             /* number of distinct target ranks */
     int* target_rank;           /* [num_of_pe] unique target ranks (borrowed ptr) */
     int* num_of_data;           /* [num_of_pe] number of data items for each rank */
     int* offset;                /* [num_of_pe] cumulative offset into exchange buffer */
     int  my_data_size;          /* total number of data items */
-} target_map_info;
+};
 
 /* -----------------------------------------------------------------------
  * map_class
  * ----------------------------------------------------------------------- */
-typedef struct {
+class map_class {
+public:
     grid_class*     my_grid;              /* pointer to external grid_class (not owned) */
     int             comp_id;
     int             send_recv_flag;       /* 1 = send map, 0 = recv map */
@@ -30,7 +32,28 @@ typedef struct {
     int*            exchange_index;       /* borrowed pointer (set_exchange_index) */
     int*            conv_table;           /* malloc'd [num_of_exchange_index] */
     target_map_info* tmap_info;           /* malloc'd (set_target_map_info) */
-} map_class;
+
+    void set_map_grid(grid_class* my_grid);
+    int  get_comp_id() const;
+    int  get_my_rank() const;
+
+    void set_send_flag();
+    void set_recv_flag();
+    int  is_send_map() const;
+    int  is_recv_map() const;
+
+    int  get_exchange_array_size() const;
+    void set_exchange_index(int* index_ptr, int n);
+    void set_target_map_info(int* target_rank, int n);
+
+    void local_2_exchange(const double* local_data, double* exchange_data) const;
+    void exchange_2_local(double* local_data, const double* exchange_data) const;
+
+    int  get_num_of_target_pe() const;
+    int  get_target_rank(int pe_num) const;
+    int  get_offset(int pe_num) const;
+    int  get_num_of_data(int pe_num) const;
+};
 
 /* -----------------------------------------------------------------------
  * Constructor

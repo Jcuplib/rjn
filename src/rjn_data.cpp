@@ -85,9 +85,8 @@ static void set_send_data(
         1.0, 0.0);
 
     if (is_exchange_assigned(send_comp, send_grid, recv_comp, recv_grid, map_tag)) {
-        data_class_set_my_exchange(&s_send_data[s_num_of_send_data],
-                                   send_comp, send_grid,
-                                   recv_comp, recv_grid, map_tag);
+        s_send_data[s_num_of_send_data].set_my_exchange(send_comp, send_grid,
+                                                        recv_comp, recv_grid, map_tag);
     }
 
     s_num_of_send_data++;
@@ -112,9 +111,8 @@ static void set_recv_data(
         1.0, 0.0);
 
     if (is_exchange_assigned(send_comp, send_grid, recv_comp, recv_grid, map_tag)) {
-        data_class_set_my_exchange(&s_recv_data[s_num_of_recv_data],
-                                   send_comp, send_grid,
-                                   recv_comp, recv_grid, map_tag);
+        s_recv_data[s_num_of_recv_data].set_my_exchange(send_comp, send_grid,
+                                                        recv_comp, recv_grid, map_tag);
     }
 
     s_num_of_recv_data++;
@@ -165,10 +163,10 @@ int is_my_send_data(int data_num,
 {
     data_class* d = &s_send_data[data_num - 1];
     char sc[STR_SHORT], sg[STR_SHORT], rc[STR_SHORT], rg[STR_SHORT];
-    data_class_get_send_comp_name(d, sc);
-    data_class_get_send_grid_name(d, sg);
-    data_class_get_recv_comp_name(d, rc);
-    data_class_get_recv_grid_name(d, rg);
+    d->get_send_comp_name(sc);
+    d->get_send_grid_name(sg);
+    d->get_recv_comp_name(rc);
+    d->get_recv_grid_name(rg);
     return (strcmp(sc, send_comp) == 0 && strcmp(sg, send_grid) == 0 &&
             strcmp(rc, recv_comp) == 0 && strcmp(rg, recv_grid) == 0) ? 1 : 0;
 }
@@ -179,10 +177,10 @@ int is_my_recv_data(int data_num,
 {
     data_class* d = &s_recv_data[data_num - 1];
     char sc[STR_SHORT], sg[STR_SHORT], rc[STR_SHORT], rg[STR_SHORT];
-    data_class_get_send_comp_name(d, sc);
-    data_class_get_send_grid_name(d, sg);
-    data_class_get_recv_comp_name(d, rc);
-    data_class_get_recv_grid_name(d, rg);
+    d->get_send_comp_name(sc);
+    d->get_send_grid_name(sg);
+    d->get_recv_comp_name(rc);
+    d->get_recv_grid_name(rg);
     return (strcmp(sc, send_comp) == 0 && strcmp(sg, send_grid) == 0 &&
             strcmp(rc, recv_comp) == 0 && strcmp(rg, recv_grid) == 0) ? 1 : 0;
 }
@@ -195,9 +193,8 @@ void set_my_send_exchange(int data_num,
                           const char* recv_comp, const char* recv_grid,
                           int map_tag)
 {
-    data_class_set_my_exchange(&s_send_data[data_num - 1],
-                               send_comp, send_grid,
-                               recv_comp, recv_grid, map_tag);
+    s_send_data[data_num - 1].set_my_exchange(send_comp, send_grid,
+                                              recv_comp, recv_grid, map_tag);
 }
 
 void set_my_recv_exchange(int data_num,
@@ -205,9 +202,8 @@ void set_my_recv_exchange(int data_num,
                           const char* recv_comp, const char* recv_grid,
                           int map_tag)
 {
-    data_class_set_my_exchange(&s_recv_data[data_num - 1],
-                               send_comp, send_grid,
-                               recv_comp, recv_grid, map_tag);
+    s_recv_data[data_num - 1].set_my_exchange(send_comp, send_grid,
+                                              recv_comp, recv_grid, map_tag);
 }
 
 /* -----------------------------------------------------------------------
@@ -215,12 +211,12 @@ void set_my_recv_exchange(int data_num,
  * ----------------------------------------------------------------------- */
 void get_send_data_name(int data_num, char* out)
 {
-    data_class_get_my_name(&s_send_data[data_num - 1], out);
+    s_send_data[data_num - 1].get_my_name(out);
 }
 
 void get_recv_data_name(int data_num, char* out)
 {
-    data_class_get_my_name(&s_recv_data[data_num - 1], out);
+    s_recv_data[data_num - 1].get_my_name(out);
 }
 
 /* -----------------------------------------------------------------------
@@ -228,12 +224,12 @@ void get_recv_data_name(int data_num, char* out)
  * ----------------------------------------------------------------------- */
 int get_send_data_intvl(int data_num)
 {
-    return data_class_get_intvl(&s_send_data[data_num - 1]);
+    return s_send_data[data_num - 1].get_intvl();
 }
 
 int get_recv_data_intvl(int data_num)
 {
-    return data_class_get_intvl(&s_recv_data[data_num - 1]);
+    return s_recv_data[data_num - 1].get_intvl();
 }
 
 /* -----------------------------------------------------------------------
@@ -244,7 +240,7 @@ static data_class* get_send_data_ptr(const char* data_name)
     int i;
     char name[STR_SHORT];
     for (i = 0; i < s_num_of_send_data; i++) {
-        data_class_get_my_name(&s_send_data[i], name);
+        s_send_data[i].get_my_name(name);
         if (strcmp(name, data_name) == 0)
             return &s_send_data[i];
     }
@@ -261,7 +257,7 @@ static data_class* get_recv_data_ptr(const char* data_name)
     int i;
     char name[STR_SHORT];
     for (i = 0; i < s_num_of_recv_data; i++) {
-        data_class_get_my_name(&s_recv_data[i], name);
+        s_recv_data[i].get_my_name(name);
         if (strcmp(name, data_name) == 0)
             return &s_recv_data[i];
     }
@@ -281,9 +277,9 @@ void put_data_1d(const char* data_name,
                  int64_t next_sec, int32_t delta_t)
 {
     data_class* dp = get_send_data_ptr(data_name);
-    if (data_class_get_num_of_layer(dp) > 1)
+    if (dp->get_num_of_layer() > 1)
         rjn_error("[rjn_data:put_data_1d]", "data dimension mismatch");
-    data_class_put_data_1d(dp, data, n_data, next_sec, delta_t);
+    dp->put_data_1d(data, n_data, next_sec, delta_t);
 }
 
 /* -----------------------------------------------------------------------
@@ -294,9 +290,9 @@ void put_data_2d(const char* data_name,
                  int64_t next_sec, int32_t delta_t)
 {
     data_class* dp = get_send_data_ptr(data_name);
-    if (data_class_get_num_of_layer(dp) <= 1)
+    if (dp->get_num_of_layer() <= 1)
         rjn_error("[rjn_data:put_data_2d]", "data dimension mismatch");
-    data_class_put_data_2d(dp, data, n1, n2, next_sec, delta_t);
+    dp->put_data_2d(data, n1, n2, next_sec, delta_t);
 }
 
 /* -----------------------------------------------------------------------
@@ -305,10 +301,10 @@ void put_data_2d(const char* data_name,
 void recv_my_data(const char* data_name, int64_t current_sec)
 {
     data_class* dp = get_recv_data_ptr(data_name);
-    if (data_class_get_num_of_layer(dp) == 1)
-        data_class_recv_data_1d(dp, current_sec);
+    if (dp->get_num_of_layer() == 1)
+        dp->recv_data_1d(current_sec);
     else
-        data_class_recv_data_2d(dp, current_sec);
+        dp->recv_data_2d(current_sec);
 }
 
 /* -----------------------------------------------------------------------
@@ -319,14 +315,14 @@ void interpolate_recv_data(const char* data_name, int64_t current_sec)
     data_class* dp = get_recv_data_ptr(data_name);
     int intvl;
 
-    if (data_class_get_time_lag(dp) == 0) return;
+    if (dp->get_time_lag() == 0) return;
 
-    intvl = data_class_get_intvl(dp);
+    intvl = dp->get_intvl();
     if (current_sec % (int64_t)intvl == 0) {
-        if (data_class_get_num_of_layer(dp) == 1)
-            data_class_interpolate_data_1d(dp);
+        if (dp->get_num_of_layer() == 1)
+            dp->interpolate_data_1d();
         else
-            data_class_interpolate_data_2d(dp);
+            dp->interpolate_data_2d();
     }
 }
 
@@ -338,9 +334,9 @@ void get_data_1d(const char* data_name,
                  int64_t current_sec, int* is_get_ok)
 {
     data_class* dp = get_recv_data_ptr(data_name);
-    if (data_class_get_num_of_layer(dp) > 1)
+    if (dp->get_num_of_layer() > 1)
         rjn_error("[rjn_data:get_data_1d]", "data dimension mismatch");
-    data_class_get_data_1d(dp, data, n_data, current_sec, is_get_ok);
+    dp->get_data_1d(data, n_data, current_sec, is_get_ok);
 }
 
 /* -----------------------------------------------------------------------
@@ -351,7 +347,7 @@ void get_data_2d(const char* data_name,
                  int64_t current_sec, int* is_get_ok)
 {
     data_class* dp = get_recv_data_ptr(data_name);
-    if (data_class_get_num_of_layer(dp) <= 1)
+    if (dp->get_num_of_layer() <= 1)
         rjn_error("[rjn_data:get_data_2d]", "data dimension mismatch");
-    data_class_get_data_2d(dp, data, n1, n2, current_sec, is_get_ok);
+    dp->get_data_2d(data, n1, n2, current_sec, is_get_ok);
 }
