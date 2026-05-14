@@ -42,7 +42,7 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "Raijin"
+PROJECT_NAME            = "Raijin Coupler"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
@@ -74,7 +74,7 @@ PROJECT_ICON           =
 # entered, it will be relative to the location where Doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = docs/api
+OUTPUT_DIRECTORY        = .
 
 # If the CREATE_SUBDIRS tag is set to YES then Doxygen will create up to 4096
 # sub-directories (in 2 levels) under the output directory of each output format
@@ -534,13 +534,13 @@ TIMESTAMP              = NO
 # normally produced when WARNINGS is set to YES.
 # The default value is: NO.
 
-EXTRACT_ALL            = NO
+EXTRACT_ALL             = YES
 
 # If the EXTRACT_PRIVATE tag is set to YES, all private members of a class will
 # be included in the documentation.
 # The default value is: NO.
 
-EXTRACT_PRIVATE        = NO
+EXTRACT_PRIVATE         = NO
 
 # If the EXTRACT_PRIV_VIRTUAL tag is set to YES, documented private virtual
 # methods of a class will be included in the documentation.
@@ -558,7 +558,7 @@ EXTRACT_PACKAGE        = NO
 # included in the documentation.
 # The default value is: NO.
 
-EXTRACT_STATIC         = NO
+EXTRACT_STATIC          = NO
 
 # If the EXTRACT_LOCAL_CLASSES tag is set to YES, classes (and structs) defined
 # locally in source files will be included in the documentation. If set to NO,
@@ -991,7 +991,7 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = src/rjn_interface.h \
+INPUT                   = ../../src
                          src/rjn_exchange_class.h
 
 # This tag can be used to specify the character encoding of the source files
@@ -1002,7 +1002,7 @@ INPUT                  = src/rjn_interface.h \
 # See also: INPUT_FILE_ENCODING
 # The default value is: UTF-8.
 
-INPUT_ENCODING         = UTF-8
+INPUT                   = ../../src
 
 # This tag can be used to specify the character encoding of the source files
 # that Doxygen parses. The INPUT_FILE_ENCODING tag can be used to specify
@@ -1012,7 +1012,7 @@ INPUT_ENCODING         = UTF-8
 # form: pattern=encoding (like *.php=ISO-8859-1).
 # See also: INPUT_ENCODING for further information on supported encodings.
 
-INPUT_FILE_ENCODING    =
+INPUT                   = ../../src
 
 # If the value of the INPUT tag contains directories, you can use the
 # FILE_PATTERNS tag to specify one or more wildcard patterns (like *.cpp and
@@ -1087,7 +1087,7 @@ FILE_PATTERNS          = *.c \
 # be searched for input files as well.
 # The default value is: NO.
 
-RECURSIVE              = NO
+RECURSIVE               = YES
 
 # The EXCLUDE tag can be used to specify files and/or directories that should be
 # excluded from the INPUT source files. This way you can easily exclude a
@@ -1172,7 +1172,7 @@ IMAGE_PATH             =
 # need to set EXTENSION_MAPPING for the extension otherwise the files are not
 # properly processed by Doxygen.
 
-INPUT_FILTER           =
+INPUT                   = ../../src
 
 # The FILTER_PATTERNS tag can be used to specify filters on a per file pattern
 # basis. Doxygen will compare the file name with each pattern and apply the
@@ -1238,14 +1238,14 @@ FORTRAN_COMMENT_AFTER  = 72
 # also VERBATIM_HEADERS is set to NO.
 # The default value is: NO.
 
-SOURCE_BROWSER         = NO
+SOURCE_BROWSER          = YES
 
 # Setting the INLINE_SOURCES tag to YES will include the body of functions,
 # multi-line macros, enums or list initialized variables directly into the
 # documentation.
 # The default value is: NO.
 
-INLINE_SOURCES         = NO
+INLINE_SOURCES          = NO
 
 # Setting the STRIP_CODE_COMMENTS tag to YES will instruct Doxygen to hide any
 # special comment blocks from generated source code fragments. Normal C, C++ and
@@ -1381,7 +1381,7 @@ IGNORE_PREFIX          =
 # If the GENERATE_HTML tag is set to YES, Doxygen will generate HTML output
 # The default value is: YES.
 
-GENERATE_HTML          = YES
+GENERATE_HTML           = YES
 
 # The HTML_OUTPUT tag is used to specify where the HTML docs will be put. If a
 # relative path is entered the value of OUTPUT_DIRECTORY will be put in front of
@@ -1389,7 +1389,7 @@ GENERATE_HTML          = YES
 # The default directory is: html.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_OUTPUT            = html
+HTML_OUTPUT             = html
 
 # The HTML_FILE_EXTENSION tag can be used to specify the file extension for each
 # generated HTML page (for example: .htm, .php, .asp).
@@ -1642,7 +1642,7 @@ DOCSET_PUBLISHER_NAME  = Publisher
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-GENERATE_HTMLHELP      = NO
+GENERATE_HTML           = YES
 
 # The CHM_FILE tag can be used to specify the file name of the resulting .chm
 # file. You can add a path in front of the file if the result should not be
@@ -2062,7 +2062,7 @@ EXTRA_SEARCH_MAPPINGS  =
 # If the GENERATE_LATEX tag is set to YES, Doxygen will generate LaTeX output.
 # The default value is: YES.
 
-GENERATE_LATEX         = YES
+GENERATE_LATEX          = NO
 
 # The LATEX_OUTPUT tag is used to specify where the LaTeX docs will be put. If a
 # relative path is entered the value of OUTPUT_DIRECTORY will be put in front of
@@ -2354,7 +2354,7 @@ MAN_LINKS              = NO
 # captures the structure of the code including all documentation.
 # The default value is: NO.
 
-GENERATE_XML           = NO
+GENERATE_XML            = NO
 
 # The XML_OUTPUT tag is used to specify where the XML pages will be put. If a
 # relative path is entered the value of OUTPUT_DIRECTORY will be put in front of
@@ -2616,7 +2616,7 @@ HIDE_UNDOC_RELATIONS   = YES
 # set to NO
 # The default value is: NO.
 
-HAVE_DOT               = YES
+HAVE_DOT                = YES
 
 # The DOT_NUM_THREADS specifies the number of dot invocations Doxygen is allowed
 # to run in parallel. When set to 0 Doxygen will base this on the number of
@@ -2679,7 +2679,7 @@ DOT_FONTPATH           =
 # Possible values are: NO, YES, TEXT, GRAPH and BUILTIN.
 # The default value is: YES.
 
-CLASS_GRAPH            = YES
+CLASS_GRAPH             = YES
 
 # If the COLLABORATION_GRAPH tag is set to YES then Doxygen will generate a
 # graph for each documented class showing the direct and indirect implementation
@@ -2691,7 +2691,7 @@ CLASS_GRAPH            = YES
 # The default value is: YES.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-COLLABORATION_GRAPH    = YES
+COLLABORATION_GRAPH     = YES
 
 # If the GROUP_GRAPHS tag is set to YES then Doxygen will generate a graph for
 # groups, showing the direct groups dependencies. Explicit enabling a group
@@ -2773,7 +2773,7 @@ TEMPLATE_RELATIONS     = NO
 # The default value is: YES.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-INCLUDE_GRAPH          = YES
+INCLUDE_GRAPH           = YES
 
 # If the INCLUDED_BY_GRAPH, ENABLE_PREPROCESSING and SEARCH_INCLUDES tags are
 # set to YES then Doxygen will generate a graph for each documented file showing
@@ -2785,7 +2785,7 @@ INCLUDE_GRAPH          = YES
 # The default value is: YES.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-INCLUDED_BY_GRAPH      = YES
+INCLUDED_BY_GRAPH       = YES
 
 # If the CALL_GRAPH tag is set to YES then Doxygen will generate a call
 # dependency graph for every global function or class method.
@@ -2797,7 +2797,7 @@ INCLUDED_BY_GRAPH      = YES
 # The default value is: NO.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-CALL_GRAPH             = NO
+CALL_GRAPH              = YES
 
 # If the CALLER_GRAPH tag is set to YES then Doxygen will generate a caller
 # dependency graph for every global function or class method.
@@ -2809,7 +2809,7 @@ CALL_GRAPH             = NO
 # The default value is: NO.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-CALLER_GRAPH           = NO
+CALLER_GRAPH            = YES
 
 # If the GRAPHICAL_HIERARCHY tag is set to YES then Doxygen will graphical
 # hierarchy of all classes instead of a textual one.
