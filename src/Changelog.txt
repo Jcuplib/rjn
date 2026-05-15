@@ -1,0 +1,40 @@
+変更の重要度
+インターフェースの変更:0.xx0000
+内部動作の変更:0.00xx00
+バグフィックス:0.0000xx
+
+※上位桁が増えたら下位桁は0にリセット
+
+Note:
+ GitHub/Zenodo release v0.51 was created before the formal Jcup-style
+ version numbering rule was introduced.
+ The formal Raijin Coupler version numbering starts from Version:0.010000.
+
+-----------------------------------------------------------------
+Version:0.010000
+Date:2026/05/15
+
+Files:
+ src/*
+ docs/manual/Raijin.tex
+ docs/manual/Raijin.bib
+ docs/manual/figs/*
+ docs/api/Doxyfile
+ docs/api/Makefile
+ README.md
+ LICENSE
+ CITATION.cff
+ VERSION
+ Changelog.txt
+
+Routines:
+ 多数
+
+Detail:
+ Raijin Coupler の正式バージョン管理開始版。
+ JcupLT coupling library の設計に基づく C++ 実装として、
+ ソースコード、LaTeX 形式のマニュアル、Doxygen API 文書生成設定、
+ テスト用ディレクトリ、README、LICENSE、CITATION 情報を整備。
+
+ 既存の GitHub/Zenodo release v0.5 は、正式バージョン番号導入前の
+ 初期アーカイブ版として保持する。
